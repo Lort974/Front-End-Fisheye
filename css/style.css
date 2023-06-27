@@ -1,16 +1,11 @@
 @import url("photographer.css");
 
 /******TEMPORAIRE**************/
-.temp-detailspic {
-    height: 200px;
-    width: 200px;
-}
 
-.temp-photograph-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+
+
+
+/********TEMPORAIRE**********/
 
 body {
     font-family: "DM Sans", sans-serif;

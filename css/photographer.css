@@ -5,7 +5,56 @@
 .photograph-header {
     background-color: #FAFAFA;
     height: 300px;
-    margin: 0 100px;
+    margin: 0 100px 101px 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 50px;
+    border-radius: 5px;
+}
+
+.photographer-summary h1 {
+    color: #D3573C;
+    font-size: 64px;
+    margin: 0;
+}
+
+.photographer-summary > p {
+    order: 1;
+    margin: 19px 0 0 0;
+}
+
+.photographer-summary > p:nth-child(2) {
+    color: #901C1C;
+    font-size: 24px;
+}
+
+.photographer-summary > p:nth-child(3) {
+    color: #525252;
+    font-size: 18px;
+}
+
+.photographer-summary aside {
+    position: fixed;
+    bottom: 0px;
+    right: 36px;
+    height: 78px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 21px 34px;
+    box-sizing: border-box;
+    background: #DB8876;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #000;
+    font-size: 24px;
+    gap: 65px;
+}
+
+.photographer-summary aside p {
+    margin: 0;
 }
 
 .contact_button {
@@ -19,6 +68,70 @@
     background-color: #901C1C;
     border-radius: 5px;
     cursor: pointer;
+    order: 2;
+}
+
+.detailspic-container {
+    order: 3;
+    height: 200px;
+    width: 200px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 100px;
+}
+
+.detailspic {
+    max-width: 305px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+}
+
+.media-section {
+    display: grid;
+    margin: 0 100px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 95px;
+    grid-auto-rows: 350px;
+}
+
+.media-container {
+    width: 100%;
+    height: 300px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.media-container img, .media-container video {
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+}
+
+.image-details {
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.media-section h2 {
+    color: #901C1C;
+    font-size: 24px;
+    margin: 0;
+}
+
+#modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(196, 196, 196, 0.40);
+    z-index: 10;
+    display: none;
 }
 
 .modal {
@@ -31,6 +144,12 @@
     justify-content: space-between;
     padding: 35px;
     margin: auto;
+    box-shadow: -5px 10px 30px 0px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    z-index: 11;
 }
 
 .modal header {
@@ -71,6 +190,13 @@ form div {
 form input {
     width: 100%;
     height: 68px;
+    border: none;
+    border-radius: 5px;
+}
+
+form textarea {
+    width: 100%;
+    height: 170px;
     border: none;
     border-radius: 5px;
 }

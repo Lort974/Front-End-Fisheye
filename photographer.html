@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8">
@@ -9,36 +9,45 @@
   </head>
   <body>
     <header>
-      <img src="assets/images/logo.png" class="logo" />
+      <img src="assets/images/logo.png" class="logo" alt="Logo de Fisheye" />
     </header>
-    <main id="main">
-      <div class="photograph-header temp-photograph-header">
-        <div>
-          <h1 id="ph-name"></h1>
-          <div>
-            <p id="ph-city"></p>
-            <p id="ph-tagline"></p>
-          </div>
-        </div>
+    <main id="main" class="photographer-page">
+      <section class="photograph-header">
         <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
-        <img src="assets/photographers/account.png" alt="Portrait photographe" id="ph-pic" class="temp-detailspic">
-      </div>
+        <div class="detailspic-container">
+          <img src="assets/photographers/account.png" alt="Portrait photographe" id="ph-pic" class="detailspic">
+        </div>
+      </section>
+      <section class="media-section"></section>
     </main>
     <div id="contact_modal">
 			<div class="modal">
 				<header>
           <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" onclick="closeModal()" />
+          <img src="assets/icons/close.svg" onclick="closeModal()" alt="Fermer"/>
         </header>
 				<form>
 					<div>
-						<label>Prénom</label>
-						<input />
+						<label for="firstname">Prénom</label>
+						<input type="text" name="Prénom" id="firstname" />
+					</div>
+					<div>
+						<label for="lastname">Nom</label>
+						<input type="text" name="Nom" id="lastname" />
+					</div>
+					<div>
+						<label for="email">Email</label>
+						<input type="email" name="Email" id="email" />
+					</div>
+					<div>
+						<label for="message">Votre message</label>
+            <textarea name="Message" id="message" cols="30" rows="10"></textarea>
 					</div>
           <button class="contact_button">Envoyer</button>
 				</form>
 			</div>
 		</div>
+    <div id="modal-bg"></div>
     <script src="/scripts/pages/photographer.js"></script>
     <script src="/scripts/utils/contactForm.js"></script>
   </body>
