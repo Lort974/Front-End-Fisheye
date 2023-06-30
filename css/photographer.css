@@ -112,7 +112,7 @@
     background-color: #000000;
 }
 
-.media-container img, .media-container video {
+.media-container img, .media-container video, .lightbox-media-container img, .lightbox-media-container video {
     position: absolute;
     transform: translate(-50%,-50%);
     left: 50%;
@@ -224,8 +224,10 @@ form textarea {
 .lightbox-media-container {
     width: 950px;
     height: 800px;
-    background: pink;
+    background: #000000;
     margin: 0 96px;
+    overflow: hidden;
+    position: relative;
 }
 
 .lightbox-switch {
@@ -264,7 +266,7 @@ form textarea {
 }
 
 .lightbox-media-description h3 {
-    margin: 12px 96px 19px 96px;
     color: #901C1C;
     font-size: 24px;
+    margin: 12px 96px 19px 96px;
 }
