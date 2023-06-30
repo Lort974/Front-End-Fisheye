@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
+    <script src="https://kit.fontawesome.com/a18e5efe47.js" crossorigin="anonymous"></script>
     <link href="css/style.css" rel="stylesheet" type="text/css" />
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -20,12 +21,14 @@
       </section>
       <section class="media-section"></section>
     </main>
-    <div id="contact_modal">
-			<div class="modal">
+    <div id="contact_modal" aria-label="Formulaire de contact" aria-hidden="true">
+      <!--ajout du role='dialog'-->
+			<div class="modal" role="dialog">
 				<header>
           <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" onclick="closeModal()" alt="Fermer"/>
+          <img id="close-btn" src="assets/icons/close.svg" onclick="closeModal()" alt="Fermer"/>
         </header>
+        <!--ajout des champs-->
 				<form>
 					<div>
 						<label for="firstname">Prénom</label>
@@ -43,11 +46,28 @@
 						<label for="message">Votre message</label>
             <textarea name="Message" id="message" cols="30" rows="10"></textarea>
 					</div>
-          <button class="contact_button">Envoyer</button>
+          <button class="contact_button" id="submit">Envoyer</button>
 				</form>
 			</div>
 		</div>
-    <div id="modal-bg"></div>
+    <div id="lightbox" aria-label="image closeup view" role="dialog" aria-hidden="true">
+      <button aria-label="close dialog" class="lightbox-switch lightbox-close" id="close-lightbox">
+        <i class="fa-solid fa-xmark" style="color: #901c1c;"></i>
+      </button>
+      <a href="" class="lightbox-switch lightbox-previous" aria-label="previous image">
+        <i class="fa-solid fa-chevron-left" style="color: #901c1c;"></i>
+      </a>
+      <div class="lightbox-media-container" aria-label="media container">
+
+      </div>
+      <a href="" class="lightbox-switch lightbox-next" aria-label="next image">
+        <i class="fa-solid fa-chevron-right" style="color: #901c1c;"></i>
+      </a>
+      <div class="lightbox-media-descrption" aria-label="media description">
+        <h3>Titre du média</h3>
+      </div>
+    </div>
+    <div id="modal-bg" aria-hidden="true"></div>
     <script src="/scripts/pages/photographer.js"></script>
     <script src="/scripts/utils/contactForm.js"></script>
   </body>

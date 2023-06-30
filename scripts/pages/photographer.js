@@ -57,6 +57,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         
         const article = document.createElement( 'article' );
         article.setAttribute('id', id);
+        //CREER UNE FONCTION POUR RANGER LES MEDIA PAR ORDRE CROISSANT D'ID POUR FACILITER LE DEFILEMENT DANS LA LIGHTBOX
         const mediaContainer = document.createElement( 'div' );
         mediaContainer.setAttribute('class', 'media-container');
         let media;
@@ -65,6 +66,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             media.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+image); //trouver comment récupérer le nom du photographe pour l'intégrer au chemin d'accès à l'image
             media.setAttribute('alt', 'Photo intitulée "'+title+'" de '+photographerName);
             mediaContainer.appendChild(media);
+            mediaContainer.setAttribute('data', 'image'); //reconnaître via CSS si c'est une image ou une vidéo
             //régler les dimensions en fonction du ratio hauteur/largeur
             const ratio = media.height/media.width;
             if (ratio < 1) {
@@ -78,6 +80,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             media = document.createElement('video');
             media.setAttribute('controls', 'true');
             mediaContainer.appendChild(media);
+            mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
             source = document.createElement('source');
             source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
             source.setAttribute('type', 'video/mp4');
@@ -136,6 +139,22 @@ async function init() {
     const { photographers } = await getPhotographers();
     const { media } = await getPhotographers();
     displayData(photographers, media);
+    //ouverture de la lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxOpener = document.querySelectorAll('.media-section > article');
+    lightboxOpener.forEach(element => {
+        element.addEventListener('click', event => {
+            lightbox.style.display = 'flex';
+            document.querySelector('body').classList.add('no-scroll');
+        })
+    });
 };
 
 init();
+
+//fermeture de la lightbox
+document.getElementById('close-lightbox').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('lightbox').style.display = 'none';
+    document.querySelector('body').classList.remove('no-scroll');
+})

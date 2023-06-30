@@ -2,6 +2,10 @@
     display: none;
 }
 
+.no-scroll {
+    overflow: hidden;
+}
+
 .photograph-header {
     background-color: #FAFAFA;
     height: 300px;
@@ -104,11 +108,16 @@
     border-radius: 5px;
 }
 
+.media-container[data="video"] {
+    background-color: #000000;
+}
+
 .media-container img, .media-container video {
     position: absolute;
     transform: translate(-50%,-50%);
     left: 50%;
     top: 50%;
+    max-width: 100%;
 }
 
 .image-details {
@@ -199,4 +208,63 @@ form textarea {
     height: 170px;
     border: none;
     border-radius: 5px;
+}
+
+#lightbox {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+    background-color: #ffffff;
+    border: 1px solid black;
+}
+
+.lightbox-media-container {
+    width: 950px;
+    height: 800px;
+    background: pink;
+    margin: 0 96px;
+}
+
+.lightbox-switch {
+    position: absolute;
+    font-size: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-close {
+    right: 0px;
+    margin: 0px 12px;
+    width: 72px;
+    height: 72px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.lightbox-previous, .lightbox-next {
+    top: 50%;
+    transform: translateY(-50%);
+    text-decoration: none;
+    color: #901C1C;
+    height: 96px;
+    width: 96px;
+}
+
+.lightbox-previous {
+    left: 0;
+}
+
+.lightbox-next {
+    right: 0;
+}
+
+.lightbox-media-description h3 {
+    margin: 12px 96px 19px 96px;
+    color: #901C1C;
+    font-size: 24px;
 }
