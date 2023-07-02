@@ -32,15 +32,22 @@ function photographerPageFactory(data) { //factory des détails du photographe s
         const p2 = document.createElement( 'p' );
         p2.textContent = tagline;
         const aside = document.createElement('aside');
+        const likesText = document.createElement('p');
+        const likesCounter = document.createElement('span');
+        likesCounter.setAttribute('id', 'total-likes');
+        const likesIcon = document.createElement('i');
+        likesIcon.classList.add('fa-solid');
+        likesIcon.classList.add('fa-heart');
+        likesIcon.style.color = '#000000';
         const priceText = document.createElement('p');
         priceText.textContent = price+' €/jour';
-        const likesText = document.createElement('p');
-        likesText.textContent = 'Nombre de likes';
         container.appendChild(h1);
         container.appendChild(p1);
         container.appendChild(p2);
         container.appendChild(aside);
         aside.appendChild(likesText);
+        likesText.appendChild(likesCounter);
+        likesText.appendChild(likesIcon);
         aside.appendChild(priceText);
         return (container);
     }
@@ -66,7 +73,8 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             media.setAttribute('alt', 'Photo intitulée "'+title+'" de '+photographerName);
             media.setAttribute('data-title', title);
             media.setAttribute('data-date', date);
-            media.setAttribute('data-likes', likes);
+            media.setAttribute('data-liked', 'false');
+            media.setAttribute('data-likes', likes); //servira pour le compteur de likes totalLikes()
             mediaContainer.appendChild(media);
             mediaContainer.setAttribute('data', 'image'); //reconnaître via CSS si c'est une image ou une vidéo
             //régler les dimensions en fonction du ratio hauteur/largeur
@@ -85,6 +93,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             media.setAttribute('controls', 'true');
             media.setAttribute('data-title', title);
             media.setAttribute('data-date', date);
+            media.setAttribute('data-liked', 'false');
             media.setAttribute('data-likes', likes);
             mediaContainer.appendChild(media);
             mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
@@ -99,9 +108,21 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         imgDetails.setAttribute('aria-label', 'Détails de l\'image');
         const imgTitle = document.createElement('h2');
         imgTitle.textContent = title;
+        const likesButton = document.createElement('button');
+        likesButton.setAttribute('onclick', 'like('+id+')');
+        const likesCount = document.createElement('span');
+        likesCount.textContent = likes;
+        const likeIcon = document.createElement('i');
+        likeIcon.classList.add('fa-solid');
+        likeIcon.classList.add('fa-heart');
+        likeIcon.setAttribute('style', 'color: #901c1c;');
+        likeIcon.setAttribute('aria-label', 'likes');
         article.appendChild(mediaContainer);
         article.appendChild(imgDetails);
         imgDetails.appendChild(imgTitle);
+        imgDetails.appendChild(likesButton);
+        likesButton.appendChild(likesCount);
+        likesButton.appendChild(likeIcon);
         return (article);
     }
     return { getMediaDOM }
@@ -137,11 +158,41 @@ async function displayData(photographers, media) { //fonction qui appelle les fa
             const achievementList = achievementsFactory(achievement);
             const getMediaDOM = achievementList.getMediaDOM();
             mediaSection.appendChild(getMediaDOM);
+            totalLikes();
         }
     });
     //par défaut, tri par ordre alphabétique
     sortMedias('title');
 };
+
+//Additionner et afficher le nombre total de likes
+function totalLikes() {
+    const medias = document.querySelectorAll('.media-container > *');
+    let totalLikes = 0;
+    medias.forEach(e => {
+        const likes = parseInt(e.getAttribute('data-likes'));
+        totalLikes += likes;
+    });
+    document.getElementById('total-likes').textContent = totalLikes;
+}
+
+//permettre de liker
+function like(id) {
+    //récupérer le media à traiter
+    const media = document.querySelector('article[id="'+id+'"] > .media-container > *');
+    //cibler le chiffre affiché à mettre à jour
+    const likesCount = document.querySelector('article[id="'+id+'"] > .image-details > button > span');
+    if (media.getAttribute('data-liked') === 'false') //seulement si on n'a pas encore liké
+    {
+        media.setAttribute('data-liked', 'true'); //empêcher de liker à nouveau
+        let newLikes = 1; //valeur à incrémenter
+        const currentLikes = parseInt(media.getAttribute('data-likes')); //nombre actuel de likes
+        newLikes += currentLikes; //nouveau nombre de likes
+        likesCount.textContent = newLikes; //mettre à jour l'affichage du bouton de like
+        media.setAttribute('data-likes', newLikes); //mettre à jour la donnée du média
+        totalLikes(); //s'en servir pour mettre à jour le compteur global du total de likes
+    }
+}
 
 //trier les medias
 function sortMedias(method) {
@@ -289,9 +340,9 @@ async function init() {
     const lightbox = document.getElementById('lightbox');
     const modalBg = document.getElementById('modal-bg');
     const main = document.querySelector('main');
-    const lightboxOpener = document.querySelectorAll('.media-section > article');
+    const lightboxOpener = document.querySelectorAll('.media-section > article > .media-container');
     lightboxOpener.forEach(element => {
-        const idMedia = element.getAttribute('id');
+        const idMedia = element.parentNode.getAttribute('id');
         element.addEventListener('click', event => {
             lightbox.style.display = 'flex';
             lightboxMediaDisplay(idMedia, media);

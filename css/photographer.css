@@ -61,6 +61,10 @@
     margin: 0;
 }
 
+#total-likes {
+    margin-right: 5px;
+}
+
 .contact_button {
     font-size: 20px;
     font-weight: bold;
@@ -106,6 +110,7 @@
     position: relative;
     overflow: hidden;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .media-container[data="video"] {
@@ -124,6 +129,20 @@
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.image-details > button {
+    background: none;
+    border: none;
+    color: #901C1C;
+    text-align: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.image-details > button > i{
+    margin-left: 5px;
 }
 
 .media-section h2 {
