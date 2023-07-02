@@ -15,6 +15,11 @@ function displayModal() {
     document.querySelector('body').classList.add('no-scroll');
     //focus sur la modale
     firstname.focus();
+    //si le menu de tri est ouvert, on le ferme pour éviter les conflits de gestion du clavier
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    if (sortMenuContainer.getAttribute('data-open') === 'true') {
+        toggleSortMenu();
+    }
 }
 
 //fermeture de la lightbox au click sur le background
@@ -65,7 +70,7 @@ document.addEventListener('keydown', function(e) {
             }
         }
         // dans le cas de maj+tab (pour remonter)
-        if (code == 9 && e.shiftKey) { //touche tab ET maj
+        if (code == 9 && e.shiftKey) { //touche tab ET shift
             //si on est sur le premier input, on preventDefault et on reprend au bouton d'envoi
             if (focused.getAttribute('id') === 'firstname') {
                 e.preventDefault();

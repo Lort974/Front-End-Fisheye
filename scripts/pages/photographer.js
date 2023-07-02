@@ -194,28 +194,6 @@ function like(id) {
     }
 }
 
-//trier les medias
-function sortMedias(method) {
-    const medias = document.querySelectorAll('.media-section > article .media-container > *');
-    let mediaTable = [];
-    if (method === 'title') { //tri par ordre alphabétique
-        //créer un tableau des titres
-        medias.forEach(e => {
-            const title = e.getAttribute('data-title');
-            mediaTable.push(title);
-        });
-        //le ranger dans l'ordre alphabétique
-        mediaTable.sort();
-        //parcourir ce tableau et donner au media dont le data-title match avec l'occurence l'order correspondant à l'index
-        for (let i = 0; i < mediaTable.length; i++) {
-            const element = mediaTable[i]; //titre du media
-            media = document.querySelector('*[data-title="'+element+'"]'); //media dont le titre est element
-            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang alphabétique (i)
-            media.setAttribute('data-order', i); //stocker cet ordre dans le media
-        }
-    }
-}
-
 //afficher le média au clic sur la miniature et permettre la navigation
 async function lightboxMediaDisplay(idMedia, media) {
     media.forEach((achievement) => {
@@ -397,9 +375,11 @@ document.getElementById('lightbox-next').addEventListener('click', e => {
     e.preventDefault();
     lightboxBrowse('next');
 })
+
+//navigation au clavier
 document.addEventListener('keydown', function(e) {
     var code = e.keyCode || e.which;
-    //parcourir la modale
+    //parcourir la lightbox
     const lightbox = document.getElementById("lightbox");
     if (lightbox.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
     {
@@ -416,13 +396,204 @@ document.addEventListener('keydown', function(e) {
             lightboxBrowse('next');
         }
     }
+    //parcourir le menu de tri
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    if (sortMenuContainer.getAttribute('data-open') === 'true') {
+        //echap pour fermer
+        if (code == 27) {
+            toggleSortMenu();
+        }
+        //flèche haut pour monter (ou gauche ou tab + shift)
+        if (code == 38 || code == 37 || (code == 9 && e.shiftKey))
+        {
+            e.preventDefault();
+            sortMenuBrowse('previous');
+        }
+        //flèche bas pour descendre (ou droite ou tab SANS shift)
+        if (code == 40 || code == 39 || (code == 9 && !e.shiftKey))
+        {
+            e.preventDefault();
+            sortMenuBrowse('next');
+        }
+    }
 });
 
-//fermeture de la lightbox au click sur le background
-/*document.getElementById('modal-bg').addEventListener('click', e => {
-    const lightbox = document.getElementById("lightbox");
-    if (lightbox.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
-    {
-        closeLightbox();
+//ouverture du menu de tri
+document.getElementById('sort-menu-container').addEventListener('click', (e) => {
+    toggleSortMenu();
+});
+
+function toggleSortMenu() {
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    const arrow = document.getElementById('sort-arrow');
+    if (sortMenuContainer.getAttribute('data-open') === 'false') { //si le menu est fermé, on l'ouvre
+        sortMenuContainer.style.height = '155.33px';
+        sortMenuContainer.setAttribute('data-open', 'true');
+        arrow.style.transform = 'rotate(180deg)';
+        document.querySelector('body').classList.add('no-scroll');
+        //fournir le focus à la première option
+        const sortOptions = document.querySelectorAll('.sort ul li > a');
+        sortOptions.forEach(e => {
+            if (e.parentNode.style.order === '1') {
+                e.focus();
+            }
+        });
     }
-});*/
+    else if (sortMenuContainer.getAttribute('data-open') === 'true') { //s'ile st ouvert, on le ferme
+        sortMenuContainer.style.height = '51.33px';
+        sortMenuContainer.setAttribute('data-open', 'false');
+        arrow.style.transform = 'rotate(0deg)';
+        document.querySelector('body').classList.remove('no-scroll');
+        //retirer le focus des options de tri
+        const sortOptions = document.querySelectorAll('.sort ul li > a');
+        sortOptions.forEach(e => {
+            e.blur();
+        });
+    }
+}
+
+//navigation dans le menu de tri
+function sortMenuBrowse(direction) {
+    const focused = document.querySelector('*:focus');
+    const currentOrder = parseInt(focused.parentNode.style.order);
+    const orders = document.querySelectorAll('.sort-menu-container ul li');
+    let maxOrder = 0;
+    let newOrder = 0;
+    orders.forEach((e) => {
+        maxOrder++;
+    });
+    if (direction === 'previous') {
+        switch (currentOrder) {
+            case 1:
+                //si premier
+                newOrder = maxOrder;
+                break;
+            default:
+                //si ni premier ni dernier
+                newOrder = currentOrder - 1;
+                break;
+        }
+        document.querySelector('.sort-menu-container ul li[data-order="'+newOrder+'"] a').focus();
+    }
+    if (direction === 'next') {
+        switch (currentOrder) {
+            case maxOrder:
+                //si premier
+                newOrder = 1;
+                break;
+            default:
+                //si ni premier ni dernier
+                newOrder = currentOrder + 1;
+                break;
+        }
+        document.querySelector('.sort-menu-container ul li[data-order="'+newOrder+'"] a').focus();
+    }
+}
+
+//appeler un nouveau tri
+document.getElementById('title-sort').addEventListener('click', (e) => {
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    if (sortMenuContainer.getAttribute('data-open') === 'true') {
+        e.preventDefault();
+        sortMedias('title');
+    }
+});
+document.getElementById('popularity-sort').addEventListener('click', (e) => {
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    if (sortMenuContainer.getAttribute('data-open') === 'true') {
+        e.preventDefault();
+        sortMedias('popularity');
+    }
+});
+document.getElementById('date-sort').addEventListener('click', (e) => {
+    const sortMenuContainer = document.getElementById('sort-menu-container');
+    if (sortMenuContainer.getAttribute('data-open') === 'true') {
+        e.preventDefault();
+        sortMedias('date');
+    }
+});
+
+//sort by popularity
+function compareNumbers(a, b) {
+    return b - a;
+}
+
+//sort by date
+function compareDates(a, b) {
+    return new Date(b) - new Date(a);
+}
+
+//trier les medias
+function sortMedias(method) {
+    const medias = document.querySelectorAll('.media-section > article .media-container > *');
+    let mediaTable = [];
+    if (method === 'title') { //tri par ordre alphabétique
+        //créer un tableau des titres
+        medias.forEach(e => {
+            const title = e.getAttribute('data-title');
+            mediaTable.push(title);
+        });
+        //le ranger dans l'ordre alphabétique
+        mediaTable.sort();
+        //parcourir ce tableau et donner au media dont le data-title match avec l'occurence l'order correspondant à l'index
+        for (let i = 0; i < mediaTable.length; i++) {
+            const element = mediaTable[i]; //titre du media
+            media = document.querySelector('*[data-title="'+element+'"]'); //media dont le titre est element
+            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang alphabétique (i)
+            media.setAttribute('data-order', i); //stocker cet ordre dans le media
+        }
+        //réordonner le menu tri
+        document.getElementById('title-sort').style.order = '1';
+        document.getElementById('title-sort').setAttribute('data-order', '1');
+        document.getElementById('popularity-sort').style.order = '2';
+        document.getElementById('popularity-sort').setAttribute('data-order', '2');
+        document.getElementById('date-sort').style.order = '3';
+        document.getElementById('date-sort').setAttribute('data-order', '3');
+    }
+    if (method === 'popularity') { //tri par ordre alphabétique
+        //créer un tableau des titres
+        medias.forEach(e => {
+            const likesNumber = parseInt(e.getAttribute('data-likes'));
+            mediaTable.push(likesNumber);
+        });
+        //le ranger dans l'ordre alphabétique
+        mediaTable.sort(compareNumbers);
+        //parcourir ce tableau et donner au media dont le data-likes match avec l'occurence l'order correspondant à l'index
+        for (let i = 0; i < mediaTable.length; i++) {
+            const element = mediaTable[i]; //nbr de likes du media
+            media = document.querySelector('*[data-likes="'+element+'"]'); //media dont le nombre de likes est element
+            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang popularité (i)
+            media.setAttribute('data-order', i); //stocker cet ordre dans le media
+        }
+        //réordonner le menu tri
+        document.getElementById('popularity-sort').style.order = '1';
+        document.getElementById('popularity-sort').setAttribute('data-order', '1');
+        document.getElementById('date-sort').style.order = '2';
+        document.getElementById('date-sort').setAttribute('data-order', '2');
+        document.getElementById('title-sort').style.order = '3';
+        document.getElementById('title-sort').setAttribute('data-order', '3');
+    }
+    if (method === 'date') { //tri par ordre alphabétique
+        //créer un tableau des titres
+        medias.forEach(e => {
+            const mediaDate = e.getAttribute('data-date');
+            mediaTable.push(mediaDate);
+        });
+        //le ranger dans l'ordre alphabétique
+        mediaTable.sort(compareDates);
+        //parcourir ce tableau et donner au media dont le data-date match avec l'occurence l'order correspondant à l'index
+        for (let i = 0; i < mediaTable.length; i++) {
+            const element = mediaTable[i]; //nbr de likes du media
+            media = document.querySelector('*[data-date="'+element+'"]'); //media dont la date est element
+            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang date (i)
+            media.setAttribute('data-order', i); //stocker cet ordre dans le media
+        }
+        //réordonner le menu tri
+        document.getElementById('date-sort').style.order = '1';
+        document.getElementById('date-sort').setAttribute('data-order', '1');
+        document.getElementById('title-sort').style.order = '2';
+        document.getElementById('title-sort').setAttribute('data-order', '2');
+        document.getElementById('popularity-sort').style.order = '3';
+        document.getElementById('popularity-sort').setAttribute('data-order', '3');
+    }
+}
