@@ -107,7 +107,13 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         imgDetails.setAttribute('class', 'image-details');
         imgDetails.setAttribute('aria-label', 'Détails de l\'image');
         const imgTitle = document.createElement('h2');
-        imgTitle.textContent = title;
+        //couper le titre si trop long
+        if (title.length > 20) {
+            imgTitle.textContent = title.slice(0,20)+'...';
+        }
+        else {
+            imgTitle.textContent = title;
+        }
         const likesButton = document.createElement('button');
         likesButton.setAttribute('onclick', 'like('+id+')');
         const likesCount = document.createElement('span');
@@ -513,16 +519,6 @@ document.getElementById('date-sort').addEventListener('click', (e) => {
     }
 });
 
-//sort by popularity
-function compareNumbers(a, b) {
-    return b - a;
-}
-
-//sort by date
-function compareDates(a, b) {
-    return new Date(b) - new Date(a);
-}
-
 //trier les medias
 function sortMedias(method) {
     const medias = document.querySelectorAll('.media-section > article .media-container > *');
@@ -557,7 +553,7 @@ function sortMedias(method) {
             mediaTable.push(likesNumber);
         });
         //le ranger dans l'ordre alphabétique
-        mediaTable.sort(compareNumbers);
+        mediaTable.sort((a,b) => b - a);
         //parcourir ce tableau et donner au media dont le data-likes match avec l'occurence l'order correspondant à l'index
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
@@ -580,7 +576,7 @@ function sortMedias(method) {
             mediaTable.push(mediaDate);
         });
         //le ranger dans l'ordre alphabétique
-        mediaTable.sort(compareDates);
+        mediaTable.sort((a,b) => new Date(b) - new Date(a));
         //parcourir ce tableau et donner au media dont le data-date match avec l'occurence l'order correspondant à l'index
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
