@@ -218,14 +218,14 @@ form textarea {
     left: 50%;
     top: 50%;
     background-color: #ffffff;
-    border: 1px solid black;
+    z-index: 11;
 }
 
 .lightbox-media-container {
     width: 950px;
     height: 800px;
     background: #000000;
-    margin: 0 96px;
+    margin: 22px 96px 0 96px;
     overflow: hidden;
     position: relative;
 }

@@ -6,6 +6,7 @@ function displayModal() {
     //afficher la modale et son background
 	modal.style.display = "block";
 	modalBg.style.display = "block";
+    modalBg.style.background = 'rgba(196, 196, 196, 0.40)';
     //ajouter les attributs aria-hidden
     modal.setAttribute('aria-hidden', 'false');
     modalBg.setAttribute('aria-hidden', 'false');
@@ -15,6 +16,15 @@ function displayModal() {
     //focus sur la modale
     firstname.focus();
 }
+
+//fermeture de la lightbox au click sur le background
+document.getElementById('modal-bg').addEventListener('click', e => {
+    const modal = document.getElementById("contact_modal");
+    if (modal.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
+    {
+        closeModal();
+    }
+});
 
 function closeModal() {
     const modal = document.getElementById("contact_modal");

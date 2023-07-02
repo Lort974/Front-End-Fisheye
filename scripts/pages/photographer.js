@@ -70,13 +70,15 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             mediaContainer.appendChild(media);
             mediaContainer.setAttribute('data', 'image'); //reconnaître via CSS si c'est une image ou une vidéo
             //régler les dimensions en fonction du ratio hauteur/largeur
-            const ratio = media.height/media.width;
-            if (ratio < 1) {
-                media.setAttribute('style', 'max-height: 300px; max-width: unset;');
-            }
-            else {
-                media.setAttribute('style', 'max-height: unset; max-width: 350px;');
-            }
+            setTimeout(() => {
+                const ratio = media.height/media.width;
+                if (ratio < 1) {
+                    media.setAttribute('style', 'max-height: 300px; max-width: unset;');
+                }
+                if (ratio > 1) {
+                    media.setAttribute('style', 'max-height: unset; max-width: 350px;');
+                }
+            }, 100);
         }
         if (video) {
             media = document.createElement('video');
@@ -90,7 +92,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
             source.setAttribute('type', 'video/mp4');
             media.appendChild(source);
-            media.setAttribute('style', 'max-height: unset; max-width: 350px;');
+            //media.setAttribute('style', 'max-height: unset; max-width: 350px;');
         }
         const imgDetails = document.createElement('div');
         imgDetails.setAttribute('class', 'image-details');
@@ -174,7 +176,8 @@ async function lightboxMediaDisplay(idMedia, media) {
         //récupérer l'id en paramètre de l'url
         const urlParams = new URLSearchParams(window.location.search);
         const currentPhotographerId = urlParams.get('id');
-
+        //cibler le titre du media affiché
+        const mediaTitle = document.querySelector('.lightbox-media-description > h3');
         //sortir tous les medias du photographe
         if (photographerId == currentPhotographerId) {
             let closeUpMedia = '';
@@ -183,6 +186,7 @@ async function lightboxMediaDisplay(idMedia, media) {
                 closeUpMedia.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+image); //trouver comment récupérer le nom du photographe pour l'intégrer au chemin d'accès à l'image
                 closeUpMedia.setAttribute('alt', 'Photo intitulée "'+title+'" de '+photographerName);
                 closeUpMedia.setAttribute('data-id', id);
+                closeUpMedia.setAttribute('data-title', title);
                 mediaContainer.appendChild(closeUpMedia);
                 mediaContainer.setAttribute('data', 'image'); //reconnaître via CSS si c'est une image ou une vidéo
                 //régler les dimensions en fonction du ratio hauteur/largeur
@@ -198,19 +202,21 @@ async function lightboxMediaDisplay(idMedia, media) {
                 closeUpMedia = document.createElement('video');
                 closeUpMedia.setAttribute('controls', 'true');
                 closeUpMedia.setAttribute('data-id', id);
+                closeUpMedia.setAttribute('data-title', title);
                 mediaContainer.appendChild(closeUpMedia);
                 mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
                 source = document.createElement('source');
                 source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
                 source.setAttribute('type', 'video/mp4');
                 closeUpMedia.appendChild(source);
-                mediaContainer.setAttribute('style', 'max-height: unset; max-width: 950px;');
+                //mediaContainer.setAttribute('style', 'max-height: unset; max-width: 950px;');
             }
             //n'afficher sur celui qui a été cliqué
             if (id == idMedia) {
                 closeUpMedia.style.display = 'block';
                 //définir data-display pour la fonction lightboxBrowse()
                 closeUpMedia.setAttribute('data-display', 'true');
+                mediaTitle.textContent = title;
             }
             else {
                 closeUpMedia.style.display = 'none';
@@ -260,6 +266,12 @@ function lightboxBrowse(direction) {
         if (e.getAttribute('data-id') == newMediaId) {
             e.style.display = 'block';
             e.setAttribute('data-display', 'true');
+            //cibler le titre du media affiché
+            const mediaTitle = document.querySelector('.lightbox-media-description > h3');
+            //récupérer le titre à afficher
+            const title = e.getAttribute('data-title');
+            //modifier le titre affiché
+            mediaTitle.textContent = title;
         }
         else {
             e.style.display = 'none';
@@ -275,6 +287,8 @@ async function init() {
     displayData(photographers, media);
     //ouverture de la lightbox
     const lightbox = document.getElementById('lightbox');
+    const modalBg = document.getElementById('modal-bg');
+    const main = document.querySelector('main');
     const lightboxOpener = document.querySelectorAll('.media-section > article');
     lightboxOpener.forEach(element => {
         const idMedia = element.getAttribute('id');
@@ -282,17 +296,30 @@ async function init() {
             lightbox.style.display = 'flex';
             lightboxMediaDisplay(idMedia, media);
             document.querySelector('body').classList.add('no-scroll');
+            main.setAttribute('aria-hidden', 'true');
+            lightbox.setAttribute('aria-hidden', 'false');
+            modalBg.setAttribute('aria-hidden', 'false');
+            modalBg.style.display = 'block';
+            modalBg.style.background = '#ffffff';
         })
     });
 };
 
 init();
 
-//fermeture de la lightbox
-document.getElementById('close-lightbox').addEventListener('click', e => {
-    e.preventDefault();
-    document.getElementById('lightbox').style.display = 'none';
+function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const modalBg = document.getElementById('modal-bg');
+    const main = document.querySelector('main');
+    //cacher les éléments
+    lightbox.style.display = 'none';
+    modalBg.style.display = 'none';
+    //rétablir le scroll
     document.querySelector('body').classList.remove('no-scroll');
+    //gérer les aria-hidden
+    main.setAttribute('aria-hidden', 'true');
+    lightbox.setAttribute('aria-hidden', 'false');
+    modalBg.setAttribute('aria-hidden', 'false');
     //supprimer le html des medias
     const images = document.querySelectorAll('#media-container img');
     images.forEach(e => {
@@ -302,6 +329,12 @@ document.getElementById('close-lightbox').addEventListener('click', e => {
     videos.forEach(e => {
         e.remove();
     });
+}
+
+//fermeture de la lightbox
+document.getElementById('close-lightbox').addEventListener('click', e => {
+    e.preventDefault();
+    closeLightbox();
 })
 
 //appel de la navigation dans la lightbox
@@ -313,3 +346,32 @@ document.getElementById('lightbox-next').addEventListener('click', e => {
     e.preventDefault();
     lightboxBrowse('next');
 })
+document.addEventListener('keydown', function(e) {
+    var code = e.keyCode || e.which;
+    //parcourir la modale
+    const lightbox = document.getElementById("lightbox");
+    if (lightbox.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
+    {
+        //echap pour fermer
+        if (code == 27) {
+            closeLightbox();
+        }
+        //flèche gauche pour previous
+        if (code == 37) {
+            lightboxBrowse('previous');
+        }
+        //flèche droite pour next
+        if (code == 39) {
+            lightboxBrowse('next');
+        }
+    }
+});
+
+//fermeture de la lightbox au click sur le background
+/*document.getElementById('modal-bg').addEventListener('click', e => {
+    const lightbox = document.getElementById("lightbox");
+    if (lightbox.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
+    {
+        closeLightbox();
+    }
+});*/
