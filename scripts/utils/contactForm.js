@@ -1,4 +1,9 @@
 function displayModal() {
+    //ajouter le nom du photograpge dans le header de la modale
+    const photographerName = document.querySelector('h1').textContent;
+    const phNameSpan = document.querySelector('.modal h2 span:nth-child(3)');
+    phNameSpan.textContent = photographerName;
+    //---
     const modal = document.getElementById("contact_modal");
     const modalBg = document.getElementById("modal-bg");
     const main = document.getElementById('main');

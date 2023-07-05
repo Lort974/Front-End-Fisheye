@@ -7,12 +7,11 @@ function photographerFactory(data) {
         const article = document.createElement( 'article' );
         article.setAttribute("aria-label", "Fiche photographe");
         const a = document.createElement('a');
-        a.setAttribute("aria-label", "Voir les détails");
+        a.setAttribute("aria-label", name);
         a.setAttribute("href", "photographer.html?id="+id);
         const imgContainer = document.createElement( 'div' );
         const img = document.createElement( 'img' );
         img.setAttribute("src", picture);
-        img.setAttribute("alt", "Photo de "+name);
         const h2 = document.createElement( 'h2' );
         h2.textContent = name;
         const p1 = document.createElement( 'p' );

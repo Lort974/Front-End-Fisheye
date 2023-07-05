@@ -89,9 +89,8 @@
     order: 2;
 }
 
-.contact_button:focus {
-    text-decoration: underline;
-    font-style: italic;
+.contact_button:focus, .contact_button:hover {
+    background-color: #D3573C;
 }
 
 .detailspic-container {
@@ -193,6 +192,7 @@
     top: 50%;
     left: 50%;
     z-index: 11;
+    height: 90%;
 }
 
 .modal header {
@@ -205,9 +205,9 @@
 }
 
 .modal header h2 {
-    font-size: 64px;
+    font-size: 56px;
     font-weight: normal;
-    text-align: center;
+    text-align: left;
 }
 
 form {
@@ -219,7 +219,7 @@ form {
 
 form label {
     color: #312E2E;
-    font-size: 36px;
+    font-size: 32px;
 }
 
 form div {
@@ -227,14 +227,15 @@ form div {
     flex-direction: column;
     width: 100%;
     align-items: self-start;
-    margin-bottom: 26px;
+    margin-bottom: 20px;
 }
 
 form input {
     width: 100%;
-    height: 68px;
+    height: 64px;
     border: none;
     border-radius: 5px;
+    font-size: 32px;
 }
 
 form textarea {
@@ -362,9 +363,8 @@ form textarea {
     text-decoration: none;
 }
 
-.sort ul li > a:focus {
-    text-decoration: underline;
-    font-style: italic;
+.sort ul li:has(> a:focus, > a:hover), .sort ul li:hover {
+    background-color: #D3573C;
 }
 
 #title-sort {

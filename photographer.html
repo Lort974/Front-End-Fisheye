@@ -10,40 +10,46 @@
   </head>
   <body>
     <header>
-      <img src="assets/images/logo.png" class="logo" alt="Logo de Fisheye" />
+      <a href="/"><img src="assets/images/logo.png" class="logo" alt="Fisheye home page" /></a>
     </header>
     <main id="main" class="photographer-page">
       <section class="photograph-header">
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
+        <button class="contact_button" onclick="displayModal()" aria-label="Contact me">Contactez-moi</button>
         <div class="detailspic-container">
           <img src="assets/photographers/account.png" alt="Portrait photographe" id="ph-pic" class="detailspic">
         </div>
       </section>
       <nav class="sort">
-        <h3>Trier par</h3>
-        <div class="sort-menu-container" id="sort-menu-container" data-open="false">
-          <ul>
-            <li id="title-sort"><a href="#">Titre</a></li>
+        <h3 aria-label="sort by" id="sort-by">Trier par</h3>
+        <div  class="sort-menu-container"
+              id="sort-menu-container" 
+              data-open="false" 
+              role="button" 
+              aria-haspopup="listbox"
+              aria-expanded="true"
+              >
+          <ul role="listbox" aria-activedescendant="true" aria-labelledby="sort-by">
+            <li id="title-sort" aria-selected="true"><a href="#">Titre</a></li>
             <li id="popularity-sort"><a href="#">Popularité</a></li>
             <li id="date-sort"><a href="#">Date</a></li>
           </ul>
-          <i class="fa-solid fa-angle-down" style="color: #ffffff;" id="sort-arrow"></i>
+          <i class="fa-solid fa-angle-down" style="color: #ffffff;" id="sort-arrow" aria-hidden="true"></i>
         </div>
       </nav>
       <section class="media-section"></section>
     </main>
     <div id="contact_modal" aria-label="Formulaire de contact" aria-hidden="true">
       <!--ajout du role='dialog'-->
-			<div class="modal" role="dialog">
+			<div class="modal" role="dialog" aria-labelledby="modal-title">
 				<header>
-          <h2>Contactez-moi</h2>
-          <img id="close-btn" src="assets/icons/close.svg" onclick="closeModal()" alt="Fermer"/>
+          <h2 id="modal-title"><span>Contactez-moi</span><br/><span></span></h2>
+          <img id="close-btn" src="assets/icons/close.svg" onclick="closeModal()" alt="Fermer" aria-label="Close contact form"/>
         </header>
         <!--ajout des champs-->
 				<form>
 					<div>
 						<label for="firstname">Prénom</label>
-						<input type="text" name="Prénom" id="firstname" />
+						<input type="text" name="Prénom" id="firstname" aria-label="Send" />
 					</div>
 					<div>
 						<label for="lastname">Nom</label>
@@ -57,7 +63,7 @@
 						<label for="message">Votre message</label>
             <textarea name="Message" id="message" cols="30" rows="10"></textarea>
 					</div>
-          <button class="contact_button" id="submit">Envoyer</button>
+          <button class="contact_button" id="submit" aria-label="Send">Envoyer</button>
 				</form>
 			</div>
 		</div>

@@ -25,7 +25,6 @@ function photographerPageFactory(data) { //factory des détails du photographe s
         container.setAttribute("class", "photographer-summary");
         container.setAttribute("aria-label", "Résumé des informations du photographe");
         const h1 = document.createElement('h1');
-        h1.setAttribute("aria-label", "Voir les détails");
         h1.textContent = name;
         const p1 = document.createElement( 'p' );
         p1.textContent = city+', '+country;
@@ -75,6 +74,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
             media.setAttribute('data-date', date);
             media.setAttribute('data-liked', 'false');
             media.setAttribute('data-likes', likes); //servira pour le compteur de likes totalLikes()
+            media.setAttribute('aria-label', title+', closeup view');
             mediaContainer.appendChild(media);
             mediaContainer.setAttribute('data', 'image'); //reconnaître via CSS si c'est une image ou une vidéo
             //régler les dimensions en fonction du ratio hauteur/largeur
@@ -146,13 +146,14 @@ async function displayData(photographers, media) { //fonction qui appelle les fa
 
     photographers.forEach((photographer) => {
         //récupérer les données du photographe
-        const { id, portrait } = photographer;
+        const { id, portrait, name } = photographer;
         //sélectionner celui dont l'id est en paramètre de l'url
         if (id == currentPhotographerId) { //que 2 "==" car les variables ne sont pas du même type
             const photographerModel = photographerPageFactory(photographer);
             const getUserDetailsDOM = photographerModel.getUserDetailsDOM();
             const picture = `assets/photographers/${portrait}`;
             phPic.setAttribute('src', picture);
+            phPic.setAttribute('alt', name);
             photographHeader.appendChild(getUserDetailsDOM); //apparaîtra à la fin de la div, à rattraper avec flex order
         }
     });
