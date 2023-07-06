@@ -1,3 +1,4 @@
+/* eslint-disable-next-line no-unused-vars */
 function displayModal() {
     //ajouter le nom du photograpge dans le header de la modale
     const photographerName = document.querySelector('h1').textContent;
@@ -23,12 +24,13 @@ function displayModal() {
     //si le menu de tri est ouvert, on le ferme pour éviter les conflits de gestion du clavier
     const sortMenuContainer = document.getElementById('sort-menu-container');
     if (sortMenuContainer.getAttribute('data-open') === 'true') {
-        toggleSortMenu();
+        toggleSortMenu(); /* eslint-disable-line no-undef */
     }
 }
 
 //fermeture de la lightbox au click sur le background
 document.getElementById('modal-bg').addEventListener('click', e => {
+    e.preventDefault();
     const modal = document.getElementById("contact_modal");
     if (modal.getAttribute('aria-hidden') === 'false') //si la lightbox est ouverte
     {
@@ -39,6 +41,7 @@ document.getElementById('modal-bg').addEventListener('click', e => {
 function closeModal() {
     const modal = document.getElementById("contact_modal");
     const modalBg = document.getElementById("modal-bg");
+    const main = document.querySelector("main");
     //masquer la modale et son background
     modal.style.display = "none";
     modalBg.style.display = "none";
@@ -96,6 +99,10 @@ document.addEventListener('keydown', function(e) {
 //gestion de l'envoi du formulaire
 document.getElementById('submit').addEventListener('click', function(e) {
     e.preventDefault();
+    const firstname = document.getElementById('firstname');
+    const lastname = document.getElementById('lastname');
+    const email = document.getElementById('email');
+    const message = document.getElementById('message');
     console.log('Prénom : '+firstname.value);
     console.log('Nom : '+lastname.value);
     console.log('Email : '+email.value);

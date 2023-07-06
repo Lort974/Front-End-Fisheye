@@ -16,7 +16,7 @@ async function getPhotographers() { //obtention des données json
 }
 
 function photographerPageFactory(data) { //factory des détails du photographe sur sa page
-    const { name, portrait, id, city, country, tagline, price } = data;
+    const { name, portrait, city, country, tagline, price } = data;
 
     const picture = `assets/photographers/${portrait}`;
 
@@ -90,14 +90,14 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         }
         if (video) {
             media = document.createElement('video');
-            media.setAttribute('controls', 'true');
+            media.setAttribute('controls', 'false');
             media.setAttribute('data-title', title);
             media.setAttribute('data-date', date);
             media.setAttribute('data-liked', 'false');
             media.setAttribute('data-likes', likes);
             mediaContainer.appendChild(media);
             mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
-            source = document.createElement('source');
+            const source = document.createElement('source');
             source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
             source.setAttribute('type', 'video/mp4');
             media.appendChild(source);
@@ -170,7 +170,7 @@ async function displayData(photographers, media) { //fonction qui appelle les fa
     });
     //par défaut, tri par ordre alphabétique
     sortMedias('title');
-};
+}
 
 //Additionner et afficher le nombre total de likes
 function totalLikes() {
@@ -184,7 +184,7 @@ function totalLikes() {
 }
 
 //permettre de liker
-function like(id) {
+function like(id) { /* eslint-disable-line no-unused-vars */
     //récupérer le media à traiter
     const media = document.querySelector('article[id="'+id+'"] > .media-container > *');
     //cibler le chiffre affiché à mettre à jour
@@ -241,7 +241,7 @@ async function lightboxMediaDisplay(idMedia, media) {
                 closeUpMedia.setAttribute('data-title', title);
                 mediaContainer.appendChild(closeUpMedia);
                 mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
-                source = document.createElement('source');
+                const source = document.createElement('source');
                 source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
                 source.setAttribute('type', 'video/mp4');
                 closeUpMedia.appendChild(source);
@@ -261,7 +261,7 @@ async function lightboxMediaDisplay(idMedia, media) {
             }
         }
     });
-};
+}
 
 //naviguer dans la lightbox
 function lightboxBrowse(direction) {
@@ -329,6 +329,7 @@ async function init() {
     lightboxOpener.forEach(element => {
         const idMedia = element.parentNode.getAttribute('id');
         element.addEventListener('click', event => {
+            event.preventDefault();
             lightbox.style.display = 'flex';
             lightboxMediaDisplay(idMedia, media);
             document.querySelector('body').classList.add('no-scroll');
@@ -338,8 +339,8 @@ async function init() {
             modalBg.style.display = 'block';
             modalBg.style.background = '#ffffff';
         })
-    });
-};
+    })
+}
 
 init();
 
@@ -427,6 +428,7 @@ document.addEventListener('keydown', function(e) {
 
 //ouverture du menu de tri
 document.getElementById('sort-menu-container').addEventListener('click', (e) => {
+    e.preventDefault();
     toggleSortMenu();
 });
 
@@ -466,7 +468,7 @@ function sortMenuBrowse(direction) {
     const orders = document.querySelectorAll('.sort-menu-container ul li');
     let maxOrder = 0;
     let newOrder = 0;
-    orders.forEach((e) => {
+    orders.forEach(() => {
         maxOrder++;
     });
     if (direction === 'previous') {
@@ -535,7 +537,7 @@ function sortMedias(method) {
         //parcourir ce tableau et donner au media dont le data-title match avec l'occurence l'order correspondant à l'index
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //titre du media
-            media = document.querySelector('*[data-title="'+element+'"]'); //media dont le titre est element
+            const media = document.querySelector('*[data-title="'+element+'"]'); //media dont le titre est element
             media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang alphabétique (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
@@ -558,7 +560,7 @@ function sortMedias(method) {
         //parcourir ce tableau et donner au media dont le data-likes match avec l'occurence l'order correspondant à l'index
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
-            media = document.querySelector('*[data-likes="'+element+'"]'); //media dont le nombre de likes est element
+            const media = document.querySelector('*[data-likes="'+element+'"]'); //media dont le nombre de likes est element
             media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang popularité (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
@@ -581,7 +583,7 @@ function sortMedias(method) {
         //parcourir ce tableau et donner au media dont le data-date match avec l'occurence l'order correspondant à l'index
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
-            media = document.querySelector('*[data-date="'+element+'"]'); //media dont la date est element
+            const media = document.querySelector('*[data-date="'+element+'"]'); //media dont la date est element
             media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang date (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
