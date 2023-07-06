@@ -346,7 +346,7 @@ form textarea {
     transition: all 300ms ease;
 }
 
-.sort-menu-container > i {
+.sort-menu-container > span {
     position: absolute;
     top: 14px;
     right: 10px;

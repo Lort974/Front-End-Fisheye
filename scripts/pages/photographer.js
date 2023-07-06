@@ -38,6 +38,7 @@ function photographerPageFactory(data) { //factory des détails du photographe s
         likesIcon.classList.add('fa-solid');
         likesIcon.classList.add('fa-heart');
         likesIcon.style.color = '#000000';
+        likesIcon.setAttribute('aria-label', 'likes');
         const priceText = document.createElement('p');
         priceText.textContent = price+' €/jour';
         container.appendChild(h1);
@@ -121,7 +122,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         const likeIcon = document.createElement('i');
         likeIcon.classList.add('fa-solid');
         likeIcon.classList.add('fa-heart');
-        likeIcon.setAttribute('style', 'color: #901c1c;');
+        likeIcon.style.color = '#901c1c';
         likeIcon.setAttribute('aria-label', 'likes');
         article.appendChild(mediaContainer);
         article.appendChild(imgDetails);
@@ -354,9 +355,9 @@ function closeLightbox() {
     //rétablir le scroll
     document.querySelector('body').classList.remove('no-scroll');
     //gérer les aria-hidden
-    main.setAttribute('aria-hidden', 'true');
-    lightbox.setAttribute('aria-hidden', 'false');
-    modalBg.setAttribute('aria-hidden', 'false');
+    main.setAttribute('aria-hidden', 'false');
+    lightbox.setAttribute('aria-hidden', 'true');
+    modalBg.setAttribute('aria-hidden', 'true');
     //supprimer le html des medias
     const images = document.querySelectorAll('#media-container img');
     images.forEach(e => {
