@@ -64,8 +64,9 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         
         const article = document.createElement( 'article' );
         article.setAttribute('id', id);
-        const mediaContainer = document.createElement( 'div' );
+        const mediaContainer = document.createElement( 'a' );
         mediaContainer.setAttribute('class', 'media-container');
+        mediaContainer.setAttribute('href', '#');
         let media;
         if (image) {
             media = document.createElement('img');
@@ -91,7 +92,6 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         }
         if (video) {
             media = document.createElement('video');
-            media.setAttribute('controls', 'false');
             media.setAttribute('data-title', title);
             media.setAttribute('data-date', date);
             media.setAttribute('data-liked', 'false');
@@ -106,7 +106,7 @@ function achievementsFactory(data) { //factory des réalisations du photographe 
         }
         const imgDetails = document.createElement('div');
         imgDetails.setAttribute('class', 'image-details');
-        imgDetails.setAttribute('aria-label', 'Détails de l\'image');
+        imgDetails.setAttribute('aria-label', 'image details');
         const imgTitle = document.createElement('h2');
         //couper le titre si trop long
         if (title.length > 20) {
@@ -238,9 +238,11 @@ async function lightboxMediaDisplay(idMedia, media) {
             if (video) {
                 closeUpMedia = document.createElement('video');
                 closeUpMedia.setAttribute('controls', 'true');
+                closeUpMedia.setAttribute('autoplay', 'true');
                 closeUpMedia.setAttribute('data-id', id);
                 closeUpMedia.setAttribute('data-title', title);
                 mediaContainer.appendChild(closeUpMedia);
+                closeUpMedia.focus();
                 mediaContainer.setAttribute('data', 'video'); //reconnaître via CSS si c'est une image ou une vidéo
                 const source = document.createElement('source');
                 source.setAttribute('src', 'assets/photographers/'+photographerFirstName+'/'+video);
@@ -277,8 +279,8 @@ function lightboxBrowse(direction) {
     //trouver le rang du media actuellement affiché
     const currentMedia = document.querySelector('.lightbox-media-container > *[data-display="true"]');
     const currentMediaId = currentMedia.getAttribute('data-id');
-    const article = document.querySelector('.media-section article[id="'+currentMediaId+'"]');
-    const currentRank = parseInt(article.style.order);
+    const media = document.querySelector('.media-section article[id="'+currentMediaId+'"] > a > *');
+    const currentRank = parseInt(media.getAttribute('data-order'));
     //trouver le nouveau rang à afficher
     let newRank = currentRank + operator;
     const mediasList = document.querySelectorAll('.media-section article');
@@ -293,7 +295,9 @@ function lightboxBrowse(direction) {
     }
     let newMediaId = '';
     mediasList.forEach(e => {
-        if (e.style.order == newRank) {
+        elementId = e.getAttribute('id');
+        elementMedia = document.querySelector('article[id="'+elementId+'"] > a > *');
+        if (elementMedia.getAttribute('data-order') == newRank) {
             newMediaId = e.getAttribute('id');
         }
     });
@@ -326,7 +330,7 @@ async function init() {
     const lightbox = document.getElementById('lightbox');
     const modalBg = document.getElementById('modal-bg');
     const main = document.querySelector('main');
-    const lightboxOpener = document.querySelectorAll('.media-section > article > .media-container');
+    const lightboxOpener = await document.querySelectorAll('.media-section > article > .media-container');
     lightboxOpener.forEach(element => {
         const idMedia = element.parentNode.getAttribute('id');
         element.addEventListener('click', event => {
@@ -535,11 +539,10 @@ function sortMedias(method) {
         });
         //le ranger dans l'ordre alphabétique
         mediaTable.sort();
-        //parcourir ce tableau et donner au media dont le data-title match avec l'occurence l'order correspondant à l'index
+        //parcourir ce tableau et donner aux medias un attribut data-order correspondant à l'ordre alphabétique
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //titre du media
             const media = document.querySelector('*[data-title="'+element+'"]'); //media dont le titre est element
-            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang alphabétique (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
         //réordonner le menu tri
@@ -556,13 +559,12 @@ function sortMedias(method) {
             const likesNumber = parseInt(e.getAttribute('data-likes'));
             mediaTable.push(likesNumber);
         });
-        //le ranger dans l'ordre alphabétique
+        //le ranger dans l'ordre des likes croissants
         mediaTable.sort((a,b) => b - a);
-        //parcourir ce tableau et donner au media dont le data-likes match avec l'occurence l'order correspondant à l'index
+        //parcourir ce tableau et donner aux medias un attribut data-order correspondant à l'ordre des likes croissant
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
             const media = document.querySelector('*[data-likes="'+element+'"]'); //media dont le nombre de likes est element
-            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang popularité (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
         //réordonner le menu tri
@@ -579,13 +581,12 @@ function sortMedias(method) {
             const mediaDate = e.getAttribute('data-date');
             mediaTable.push(mediaDate);
         });
-        //le ranger dans l'ordre alphabétique
+        //le ranger dans l'ordre anti-chronologique
         mediaTable.sort((a,b) => new Date(b) - new Date(a));
-        //parcourir ce tableau et donner au media dont le data-date match avec l'occurence l'order correspondant à l'index
+        //parcourir ce tableau et donner aux medias un attribut data-order correspondant à l'ordre de publication
         for (let i = 0; i < mediaTable.length; i++) {
             const element = mediaTable[i]; //nbr de likes du media
             const media = document.querySelector('*[data-date="'+element+'"]'); //media dont la date est element
-            media.parentNode.parentNode.style.order = i; //donner à l'article parent la propriété order = rang date (i)
             media.setAttribute('data-order', i); //stocker cet ordre dans le media
         }
         //réordonner le menu tri
@@ -595,5 +596,11 @@ function sortMedias(method) {
         document.getElementById('title-sort').setAttribute('data-order', '2');
         document.getElementById('popularity-sort').style.order = '3';
         document.getElementById('popularity-sort').setAttribute('data-order', '3');
+    }
+    //reconstruire le dom grâce à data-order en supprimant l'ancien dom
+    for (let i = 0; i < mediaTable.length; i++)
+    {
+        const article = document.querySelector('.media-section > article:has(> a > *[data-order="'+i+'"])');
+        document.querySelector('.media-section').append(article);
     }
 }

@@ -11,7 +11,6 @@
         else {
             alert("HTTP-Error: " + response.status);
         }
-        console.log(photographers)
         // et bien retourner le tableau photographers seulement une fois récupéré
         return (photographers)
     }
